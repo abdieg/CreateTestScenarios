@@ -15,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class GenerateScenarios {
+    static final String init_wording = "start flow";
+    static final String final_wording = "#";
     static boolean TESTING = false;
     static Document doc = null;
     static Map<Integer, String> nodeid_value_dict = new HashMap<Integer, String>();
@@ -79,11 +81,11 @@ public class GenerateScenarios {
                     String stepName = eElement.getElementsByTagName("y:Label.Text").item(0).getTextContent();
                     nodeid_value_dict.put(stepId, stepName);
 
-                    if (stepName.contains("#")) {
+                    if (stepName.contains(final_wording)) {
                         final_nodes.add(stepId);
                         final_nodes_value_dict.put(stepId, stepName);
                     }
-                    else if (stepName.toLowerCase().contains("start flow")) {
+                    else if (stepName.toLowerCase().contains(init_wording)) {
                         starting_node = stepId;
                     }
                 }
