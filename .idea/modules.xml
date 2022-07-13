@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CreateTestScenarios.iml" filepath="$PROJECT_DIR$/CreateTestScenarios.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/CreateTestScenarios.iml" filepath="$PROJECT_DIR$/src/CreateTestScenarios.iml" />
     </modules>
   </component>
 </project>

@@ -12,7 +12,7 @@ public class Graph{
     }
 
     public void addEdge(int source, int destination) {
-        xNode = node = new xNode(source, destination);
+        xNode node = new xNode(source, destination);
         adjacencyList[source].addLast(node);
     }
 }

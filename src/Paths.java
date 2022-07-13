@@ -13,17 +13,16 @@ public class Paths {
             xNode node = list.get(i);
             if (node.destination != end && visited[node.destination] == false) {
                 print(graph, node.destination, end, newPath, visited);
-            }
-            else if (node.destination == end) {
+            } else if (node.destination == end) {
                 finalPaths.add(newPath + "," + node.destination);
             }
-            visited[start} = false
+            visited[start] = false;
         }
+    }
 
-        public void getAllPaths(Graph graph, int start, int end) {
-            boolean[] visited = new booleand[graph.vertices];
-            visited[start] = true;
-            print(graph, start, end, "", visited)
-        }
+    public void getAllPaths(Graph graph, int start, int end) {
+        boolean[] visited = new boolean[graph.vertices];
+        visited[start] = true;
+        print(graph, start, end, "", visited);
     }
 }
