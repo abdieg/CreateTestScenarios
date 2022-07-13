@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b8ba89ee-5a9c-427c-b268-cfcc4b825c27" name="Changes" comment="Fix code">
-      <change afterPath="$PROJECT_DIR$/src/GenerateScenarios.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/MainMenu.java" afterDir="false" />
+    <list default="true" id="b8ba89ee-5a9c-427c-b268-cfcc4b825c27" name="Changes" comment="Adding graph methods">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GenerateScenarios.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GenerateScenarios.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +83,14 @@
       <option name="project" value="LOCAL" />
       <updated>1657725069780</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Adding graph methods">
+      <created>1657744256830</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1657744256830</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -101,6 +107,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Adding Graph classes" />
     <MESSAGE value="Fix code" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix code" />
+    <MESSAGE value="Adding graph methods" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding graph methods" />
   </component>
 </project>

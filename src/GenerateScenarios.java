@@ -7,14 +7,12 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static javax.management.MBeanServerFactory.builder;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class GenerateScenarios {
     static boolean TESTING = false;
@@ -51,6 +49,8 @@ public class GenerateScenarios {
         try {
             doc = builder.parse(graphml_xml);
         } catch (SAXException e) {
+            System.out.println("UNEXPECTED ERROR!");
+        } catch (NullPointerException e) {
             System.out.println("UNEXPECTED ERROR!");
         } catch (IOException e) {
             System.out.println("ERROR! UNABLE TO READ THE FILE!");
@@ -194,7 +194,7 @@ public class GenerateScenarios {
 
         if (TESTING) {
             System.out.println("Final nodes for this graph");
-            viewHasmap(temp_fn);
+            viewHashmap(temp_fn);
         }
         return temp_fn;
     }
@@ -213,7 +213,7 @@ public class GenerateScenarios {
         finalPaths_clone = getAllPossiblePaths();
 
         if (finalPaths_clone.size() > 0) {
-            System.out.println("Available paths");
+            System.out.println("Available paths\n");
             System.out.println("--------------------------------------------------");
 
             for (int i = 0; i < finalPaths_clone.size(); i++) {
@@ -245,7 +245,7 @@ public class GenerateScenarios {
             finalPaths_clone = getSpecificPath(end_node);
 
             if (finalPaths_clone.size() > 0) {
-                System.out.println("Available paths");
+                System.out.println("Available paths\n");
                 System.out.println("--------------------------------------------------");
 
                 for (int i = 0; i < finalPaths_clone.size(); i++) {
@@ -264,6 +264,316 @@ public class GenerateScenarios {
         else {
             System.out.println("ERROR! FINAL NODE PROVIDED IS NOT VALID");
         }
+    }
+
+    public static void generateScenariosInTextFile(String dir) {
+        String export_folder = dir + "\\" + createFolder(dir, "TestCasesGenerated");
+
+        if (TESTING)
+            System.out.println("Export folder: " + export_folder);
+
+        getGraphmlFilesInCurrentFolder(dir);
+        viewStringList(files_list);
+
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+
+        for (int i = 0; i < files_list.size(); i++) {
+            try {
+                fw = new FileWriter(export_folder + "\\" + files_list.get(i) + ".txt");
+                bw = new BufferedWriter(fw);
+
+                // Read GraphML file to link the node id with its step. It also saves the final nodes available
+                doc = parseGraphml(dir +  "\\" + files_list.get(i));
+
+                // Get node information
+                getNodeInformation(doc);
+
+                // Build adjacent matrix with edge information
+                buildAdjacentMatrix();
+
+                // Get all possible paths
+                finalPaths_clone = getAllPossiblePaths();
+
+                if (finalPaths_clone.size() > 0) {
+                    bw.write("Available paths\n");
+                    bw.write("--------------------------------------------------\n");
+
+                    for (int a = 0; a < finalPaths_clone.size(); a++) {
+                        String[] parts = finalPaths_clone.get(a).substring(1).split(",");
+                        bw.write("TEST SCENARIO: " + Integer.valueOf(a+1) + "\n");
+                        for (int j = 0; j < parts.length; j++) {
+                            bw.write(nodeid_value_dict.get(Integer.valueOf(parts[j])) + "\n");
+                        }
+                        bw.write("--------------------------------------------------\n");
+                    }
+                }
+                else {
+                    System.out.println("Available paths: NONE");
+                }
+            } catch (IOException e) {
+                System.out.println("ERROR! THERE WAS A PROBLEM WRITING THE TEXT FILE");
+            } finally {
+                try {
+                    if (bw != null) {
+                        bw.close();
+                    }
+                    if (fw != null) {
+                        fw.close();
+                    }
+                } catch (IOException e) {
+                    System.out.println("ERROR! THERE WAS A PROBLEM CLOSING THE TEXT FILE");
+                }
+            }
+            clean();
+        }
+    }
+
+    public static void generateScenariosInTextFile(String dir, String graphml_name) {
+        String export_folder = dir;
+
+        if (TESTING)
+            System.out.println("Export folder: " + export_folder);
+
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+
+        for (int i = 0; i < files_list.size(); i++) {
+            try {
+                fw = new FileWriter(export_folder + "\\" + graphml_name + ".txt");
+                bw = new BufferedWriter(fw);
+
+                // Read GraphML file to link the node id with its step. It also saves the final nodes available
+                doc = parseGraphml(dir +  "\\" + graphml_name);
+
+                // Get node information
+                getNodeInformation(doc);
+
+                // Build adjacent matrix with edge information
+                buildAdjacentMatrix();
+
+                // Get all possible paths
+                finalPaths_clone = getAllPossiblePaths();
+
+                if (finalPaths_clone.size() > 0) {
+                    bw.write("Available paths\n");
+                    bw.write("--------------------------------------------------\n");
+
+                    for (int a = 0; a < finalPaths_clone.size(); a++) {
+                        String[] parts = finalPaths_clone.get(a).substring(1).split(",");
+                        bw.write("TEST SCENARIO: " + Integer.valueOf(a+1) + "\n");
+                        for (int j = 0; j < parts.length; j++) {
+                            bw.write(nodeid_value_dict.get(Integer.valueOf(parts[j])) + "\n");
+                        }
+                        bw.write("--------------------------------------------------\n");
+                    }
+                }
+                else {
+                    System.out.println("Available paths: NONE");
+                }
+            } catch (IOException e) {
+                System.out.println("ERROR! THERE WAS A PROBLEM WRITING THE TEXT FILE");
+            } finally {
+                try {
+                    if (bw != null) {
+                        bw.close();
+                    }
+                    if (fw != null) {
+                        fw.close();
+                    }
+                } catch (IOException e) {
+                    System.out.println("ERROR! THERE WAS A PROBLEM CLOSING THE TEXT FILE");
+                }
+            }
+        }
+        clean();
+    }
+
+    public static void generateScenariosInTextFile(String dir, String graphml_name, int end_node) {
+        String export_folder = dir;
+
+        if (TESTING)
+            System.out.println("Export folder: " + export_folder);
+
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+
+        try {
+            fw = new FileWriter(export_folder + "\\" + graphml_name + ".txt");
+            bw = new BufferedWriter(fw);
+
+            // Read GraphML file to link the node id with its step. It also saves the final nodes available
+            doc = parseGraphml(dir +  "\\" + graphml_name);
+
+            // Get node information
+            getNodeInformation(doc);
+
+            if (isValidFinalNode(end_node)) {
+                // Build adjacent matrix with edge information
+                buildAdjacentMatrix();
+
+                // Clean the file name so it does not cause any trouble
+                String endingName = cleanFileName(nodeid_value_dict.get(end_node));
+                System.out.println(endingName);
+
+                String[] sprintAndStory = graphml_name.split(" - ");
+                String sprintNumber = sprintAndStory[0];
+                String jiraNumber = sprintAndStory[1];
+
+                fw = new FileWriter(export_folder + "\\" + sprintNumber + " - " + jiraNumber + " - " + endingName + " - " + generateTimestamp() + ".txt");
+                bw = new BufferedWriter(fw);
+
+                // Get specific paths
+                finalPaths_clone = getSpecificPath(end_node);
+
+                if (finalPaths_clone.size() > 0) {
+                    bw.write("Available paths\n");
+                    bw.write("--------------------------------------------------\n");
+
+                    for (int a = 0; a < finalPaths_clone.size(); a++) {
+                        String[] parts = finalPaths_clone.get(a).substring(1).split(",");
+                        bw.write("TEST SCENARIO: " + Integer.valueOf(a + 1) + "\n");
+                        for (int j = 0; j < parts.length; j++) {
+                            bw.write(nodeid_value_dict.get(Integer.valueOf(parts[j])) + "\n");
+                        }
+                        bw.write("--------------------------------------------------\n");
+                    }
+                } else {
+                    System.out.println("Available paths: NONE");
+                }
+            }
+            else {
+                System.out.println("ERROR! FINAL NODE PROVIDED IS NOT VALID");
+            }
+        } catch (IOException e) {
+            System.out.println("ERROR! THERE WAS A PROBLEM WRITING THE TEXT FILE");
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.close();
+                }
+                if (fw != null) {
+                    fw.close();
+                }
+            } catch (IOException e) {
+                System.out.println("ERROR! THERE WAS A PROBLEM CLOSING THE TEXT FILE");
+            }
+        }
+        clean();
+    }
+
+    public static void clean() {
+        doc = null;
+        nodeid_value_dict.clear();
+        final_nodes.clear();
+        final_nodes_value_dict.clear();
+        edges_list.clear();
+        starting_node = 999999999;
+        nlsteps = null;
+        try {
+            finalPaths_clone.clear();
+        } catch (NullPointerException e) {
+            System.out.println("UNEXPECTED ERROR!");
+        }
+    }
+
+    public static boolean isValidFinalNode(int final_node) {
+        boolean is_valid_final = false;
+        for (int i = 0; i < final_nodes.size(); i++) {
+            if (final_nodes.get(i) == final_node) {
+                is_valid_final = true;
+            }
+        }
+        return is_valid_final;
+    }
+
+    public static String createFolder(String location, String folderName) {
+        Date now = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyy-MM-dd-hh-mm-ss");
+        String export_dir_name = folderName + "_" + dateFormat.format(now);
+        File file_export_dir = new File(location + "\\" + export_dir_name);
+        file_export_dir.mkdir();
+
+        return file_export_dir.getName();
+    }
+
+    public static void getGraphmlFilesInCurrentFolder(String dir) {
+        File currentDir = new File(dir);
+        File[] filesList = currentDir.listFiles();
+        for (File f : filesList) {
+            if (!f.isDirectory()) {
+                if (f.isFile()) {
+                    if (f.getName().endsWith(".graphml")) {
+                        files_list.add(f.getName());
+                    }
+                }
+            }
+        }
+    }
+
+    public static Map<Integer, String> showGraphmlFilesInCurrentFolder(String dir) {
+        Map<Integer, String> number_file = new HashMap<Integer, String>();
+        int i = 0;
+        File currentDir = new File(dir);
+        File[] filesList = currentDir.listFiles();
+        for (File f : filesList) {
+            if (!f.isDirectory()) {
+                if (f.isFile()) {
+                    if (f.getName().endsWith(".graphml")) {
+                        number_file.put(i, f.getName());
+                        i++;
+                    }
+                }
+            }
+        }
+        return number_file;
+    }
+
+    public static void viewHashmap(Map<Integer, String> map) {
+        for (Map.Entry<Integer, String> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + "=" + entry.getValue());
+        }
+    }
+
+    public static void viewIntegerArrayList(List<int[]> intList) {
+        for (int i = 0; i < intList.size(); i++) {
+            System.out.println("Source: " + intList.get(i)[0] + " | target: " + intList.get(i)[1]);
+        }
+    }
+
+    public static void viewIntegerList(List<Integer> intList) {
+        for (int i = 0; i < intList.size(); i++) {
+            System.out.println(intList.get(i));
+        }
+    }
+
+    public static void viewStringList(List<String> strList) {
+        for (int i = 0; i < strList.size(); i++) {
+            System.out.println(strList.get(i));
+        }
+    }
+
+    public static String cleanFileName(String str) {
+        String cleanStr = str
+                .replace("\\", "")
+                .replace("/", "")
+                .replace(":", "")
+                .replace("*", "")
+                .replace("?", "")
+                .replace("<", "")
+                .replace(">", "")
+                .replace("|", "")
+                .replace(".", "");
+
+        return cleanStr;
+    }
+
+    public static String generateTimestamp() {
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+        String export_timestamp = sdf.format(now);
+
+        return export_timestamp;
     }
 
 }
