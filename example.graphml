@@ -69,7 +69,7 @@
 			<data key="d4">
 				<x:List>
 					<y:Label LayoutParameter="{y:GraphMLReference 2}" Style="{y:GraphMLReference 3}">
-						<y:Label.Text><![CDATA[Start flow]]></y:Label.Text>
+						<y:Label.Text><![CDATA[START FLOW]]></y:Label.Text>
 					</y:Label>
 				</x:List>
 			</data>

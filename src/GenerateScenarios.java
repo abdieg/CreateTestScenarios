@@ -15,9 +15,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class GenerateScenarios {
-    static final String init_wording = "start flow";
+    static final String init_wording = "START FLOW";
     static final String final_wording = "#";
-    static boolean TESTING = false;
+    static boolean TESTING = true;
     static Document doc = null;
     static Map<Integer, String> nodeid_value_dict = new HashMap<Integer, String>();
     static List<Integer> final_nodes = new ArrayList<Integer>();
@@ -43,7 +43,7 @@ public class GenerateScenarios {
         try {
             builder = factory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
-            System.out.println("UNEXPECTED ERROR!");
+            System.out.println("UNEXPECTED ERROR UPON PARSING DOCUMENT BUILDER!");
         }
 
         Document doc = null;
@@ -51,13 +51,13 @@ public class GenerateScenarios {
         try {
             doc = builder.parse(graphml_xml);
         } catch (SAXException e) {
-            System.out.println("UNEXPECTED ERROR!");
+            System.out.println("UNEXPECTED ERROR WHEN PARSING THE DOCUMENT!");
         } catch (NullPointerException e) {
-            System.out.println("UNEXPECTED ERROR!");
+            System.out.println("UNEXPECTED ERROR DUE TO EMPTY DOCUMENT!");
         } catch (IOException e) {
             System.out.println("ERROR! UNABLE TO READ THE FILE!");
         } catch (IllegalArgumentException e) {
-            System.out.println("ERROR! UNABLE TO READ THE FILE!");
+            System.out.println("ERROR! UNABLE TO READ THE FILE DUE TO BAD ARGUMENTS!");
         }
 
         return doc;
