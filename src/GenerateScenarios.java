@@ -30,7 +30,7 @@ public class GenerateScenarios {
 
     public static Document parseGraphml(String graphml_source) {
         if (TESTING)
-            System.out.println("We are reading the following file: " + graphml_source);
+            System.out.println("\nWe are reading the following file: " + graphml_source);
 
         File graphml_xml = null;
 
@@ -282,6 +282,7 @@ public class GenerateScenarios {
             System.out.println("Export folder: " + export_folder);
 
         getGraphmlFilesInCurrentFolder(dir);
+        System.out.println("\nTest cases will be automatically generated for the following files:");
         viewStringList(files_list);
 
         BufferedWriter bw = null;
@@ -523,7 +524,7 @@ public class GenerateScenarios {
         Date now = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyy-MM-dd-hh-mm-ss");
         String export_dir_name = folderName + "_" + dateFormat.format(now);
-        File file_export_dir = new File(location + "\\" + export_dir_name);
+        File file_export_dir = new File(location + "/" + export_dir_name);
         file_export_dir.mkdir();
 
         return file_export_dir.getName();
