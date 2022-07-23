@@ -84,7 +84,7 @@ public class MainMenu {
 
             if (choice.equalsIgnoreCase("1")) {
                 GenerateScenarios.generateScenariosInTextFile(current_dir);
-                System.out.println(">>>>PROCESS COMPLETE!!!\n");
+                System.out.println("\n>>>>PROCESS COMPLETE!!!\n");
                 return MainMenu.mainMenu(console);
             }
             else if (choice.equalsIgnoreCase("2"))
@@ -128,7 +128,7 @@ public class MainMenu {
                 String mapValue = number_file.get(Integer.valueOf(choice));
                 if (mapValue != null) {
                     GenerateScenarios.generateScenariosInTextFile(current_dir, mapValue);
-                    System.out.println(">>>>PROCESS COMPLETE!!!\n");
+                    System.out.println("\n>>>>PROCESS COMPLETE!!!\n");
                     return MainMenu.mainMenu(console);
                 }
                 else {
@@ -136,7 +136,6 @@ public class MainMenu {
                     return MainMenu.subMenu2(console);
                 }
             }
-
         } while (choice.equalsIgnoreCase("x"));
     }
 

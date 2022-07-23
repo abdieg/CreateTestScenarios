@@ -1,0 +1,19 @@
+Scenarios created for file: example.graphml
+--------------------------------------------------
+TEST SCENARIO: 1
+Start-flow
+Open google.com
+Finish #1: There is no internet connection
+--------------------------------------------------
+TEST SCENARIO: 2
+Start-flow
+Open google.com
+Do a random search
+Finish #2: Something is found
+--------------------------------------------------
+TEST SCENARIO: 3
+Start-flow
+Open google.com
+Do a random search
+Finish #3: No results found
+--------------------------------------------------

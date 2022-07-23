@@ -15,20 +15,23 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class GenerateScenarios {
-    static final String init_wording = "START FLOW";
+    static final String init_wording = "Start-flow";
     static final String final_wording = "#";
-    static boolean TESTING = true;
+    static boolean TESTING = false;
     static Document doc = null;
-    static Map<Integer, String> nodeid_value_dict = new HashMap<Integer, String>();
+    static Map<Integer, String> node_id_value_dict = new HashMap<Integer, String>();
     static List<Integer> final_nodes = new ArrayList<Integer>();
     static Map<Integer, String> final_nodes_value_dict = new HashMap<Integer, String>();
     static List<int[]> edges_list = new ArrayList<int[]>();
     static int starting_node = 999999999;
-    static NodeList nlsteps = null;
+    static NodeList nodes_steps = null;
     static List<String> finalPaths_clone = null;
     static List<String> files_list = new ArrayList<String>();
 
     public static Document parseGraphml(String graphml_source) {
+        if (TESTING)
+            System.out.println("We are reading the following file: " + graphml_source);
+
         File graphml_xml = null;
 
         try {
@@ -44,6 +47,8 @@ public class GenerateScenarios {
             builder = factory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
             System.out.println("UNEXPECTED ERROR UPON PARSING DOCUMENT BUILDER!");
+        } catch (NullPointerException e) {
+            System.out.println("ERROR! DOCUMENT BUILDER IS NULL!");
         }
 
         Document doc = null;
@@ -65,27 +70,26 @@ public class GenerateScenarios {
 
     public static void getNodeInformation(Document doc) {
         if (doc != null) {
-            nlsteps = doc.getElementsByTagName("node");
+            nodes_steps = doc.getElementsByTagName("node");
 
-            if (TESTING) {
-                System.out.println("\nTotal nodes: " + nlsteps.getLength());
-            }
+            if (TESTING)
+                System.out.println("\nTotal nodes: " + nodes_steps.getLength());
 
-            for (int i = 0; i < nlsteps.getLength(); i++) {
-                Node stepNode = nlsteps.item(i);
+            for (int i = 0; i < nodes_steps.getLength(); i++) {
+                Node stepNode = nodes_steps.item(i);
 
                 if (stepNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) stepNode;
                     String string_stepId = eElement.getAttribute("id").replace("n", "");
                     int stepId = Integer.valueOf(string_stepId);
                     String stepName = eElement.getElementsByTagName("y:Label.Text").item(0).getTextContent();
-                    nodeid_value_dict.put(stepId, stepName);
+                    node_id_value_dict.put(stepId, stepName);
 
                     if (stepName.contains(final_wording)) {
                         final_nodes.add(stepId);
                         final_nodes_value_dict.put(stepId, stepName);
                     }
-                    else if (stepName.toLowerCase().contains(init_wording)) {
+                    else if (stepName.contains(init_wording)) {
                         starting_node = stepId;
                     }
                 }
@@ -103,7 +107,7 @@ public class GenerateScenarios {
                 System.out.println("\nFinal nodes:");
                 viewHashmap(final_nodes_value_dict);
                 System.out.println("\nNodes and its values:");
-                viewHashmap(nodeid_value_dict);
+                viewHashmap(node_id_value_dict);
             }
 
             // Get adjacency matrix
@@ -145,15 +149,18 @@ public class GenerateScenarios {
 
         // Load all available paths from one node to another
         try {
-            vertices = nlsteps.getLength();
+            vertices = nodes_steps.getLength();
         } catch (NullPointerException e) {
             System.out.println("ERROR! UNABLE TO GET ALL POSSIBLE PATHS!");
         }
 
-        if (vertices == -1) {
+        if (vertices != -1) {
             Graph graph = new Graph(vertices);
             for (int i = 0; i < edges_list.size(); i++) {
                 graph.addEdge(edges_list.get(i)[0], edges_list.get(i)[1]);
+
+                if(TESTING)
+                    System.out.println("Edge from " + edges_list.get(i)[0] + " to " + edges_list.get(i)[1]);
             }
 
             // Compute all available paths from one node to another
@@ -170,12 +177,12 @@ public class GenerateScenarios {
 
         // Load all available paths from one node to another
         try {
-            vertices = nlsteps.getLength();
+            vertices = nodes_steps.getLength();
         } catch (NullPointerException e) {
             System.out.println("ERROR! UNABLE TO GET ALL POSSIBLE PATHS!");
         }
 
-        if (vertices == -1) {
+        if (vertices != -1) {
             Graph graph = new Graph(vertices);
             for (int i = 0; i < edges_list.size(); i++) {
                 graph.addEdge(edges_list.get(i)[0], edges_list.get(i)[1]);
@@ -215,14 +222,14 @@ public class GenerateScenarios {
         finalPaths_clone = getAllPossiblePaths();
 
         if (finalPaths_clone.size() > 0) {
-            System.out.println("Available paths\n");
+            System.out.println("The following scenarios were created as per selection made\n");
             System.out.println("--------------------------------------------------");
 
             for (int i = 0; i < finalPaths_clone.size(); i++) {
                 String[] parts = finalPaths_clone.get(i).substring(1).split(",");
                 System.out.println("TEST SCENARIO: " + Integer.valueOf(i+1));
                 for (int j = 0; j < parts.length; j++) {
-                    System.out.println(nodeid_value_dict.get(Integer.valueOf(parts[j])));
+                    System.out.println(node_id_value_dict.get(Integer.valueOf(parts[j])));
                 }
                 System.out.println("--------------------------------------------------");
             }
@@ -247,14 +254,14 @@ public class GenerateScenarios {
             finalPaths_clone = getSpecificPath(end_node);
 
             if (finalPaths_clone.size() > 0) {
-                System.out.println("Available paths\n");
+                System.out.println("The following scenarios were created as per selection made\n");
                 System.out.println("--------------------------------------------------");
 
                 for (int i = 0; i < finalPaths_clone.size(); i++) {
                     String[] parts = finalPaths_clone.get(i).substring(1).split(",");
                     System.out.println("TEST SCENARIO: " + Integer.valueOf(i+1));
                     for (int j = 0; j < parts.length; j++) {
-                        System.out.println(nodeid_value_dict.get(Integer.valueOf(parts[j])));
+                        System.out.println(node_id_value_dict.get(Integer.valueOf(parts[j])));
                     }
                     System.out.println("--------------------------------------------------");
                 }
@@ -269,7 +276,7 @@ public class GenerateScenarios {
     }
 
     public static void generateScenariosInTextFile(String dir) {
-        String export_folder = dir + "\\" + createFolder(dir, "TestCasesGenerated");
+        String export_folder = dir + "/" + createFolder(dir, "TestCasesGenerated");
 
         if (TESTING)
             System.out.println("Export folder: " + export_folder);
@@ -282,11 +289,11 @@ public class GenerateScenarios {
 
         for (int i = 0; i < files_list.size(); i++) {
             try {
-                fw = new FileWriter(export_folder + "\\" + files_list.get(i) + ".txt");
+                fw = new FileWriter(export_folder + "/" + files_list.get(i) + ".txt");
                 bw = new BufferedWriter(fw);
 
                 // Read GraphML file to link the node id with its step. It also saves the final nodes available
-                doc = parseGraphml(dir +  "\\" + files_list.get(i));
+                doc = parseGraphml(dir +  "/" + files_list.get(i));
 
                 // Get node information
                 getNodeInformation(doc);
@@ -298,14 +305,14 @@ public class GenerateScenarios {
                 finalPaths_clone = getAllPossiblePaths();
 
                 if (finalPaths_clone.size() > 0) {
-                    bw.write("Available paths\n");
+                    bw.write("The following scenarios were created as per selection made\n");
                     bw.write("--------------------------------------------------\n");
 
                     for (int a = 0; a < finalPaths_clone.size(); a++) {
                         String[] parts = finalPaths_clone.get(a).substring(1).split(",");
                         bw.write("TEST SCENARIO: " + Integer.valueOf(a+1) + "\n");
                         for (int j = 0; j < parts.length; j++) {
-                            bw.write(nodeid_value_dict.get(Integer.valueOf(parts[j])) + "\n");
+                            bw.write(node_id_value_dict.get(Integer.valueOf(parts[j])) + "\n");
                         }
                         bw.write("--------------------------------------------------\n");
                     }
@@ -340,52 +347,50 @@ public class GenerateScenarios {
         BufferedWriter bw = null;
         FileWriter fw = null;
 
-        for (int i = 0; i < files_list.size(); i++) {
-            try {
-                fw = new FileWriter(export_folder + "\\" + graphml_name + ".txt");
-                bw = new BufferedWriter(fw);
+        try {
+            fw = new FileWriter(export_folder + "/" + graphml_name + ".txt");
+            bw = new BufferedWriter(fw);
 
-                // Read GraphML file to link the node id with its step. It also saves the final nodes available
-                doc = parseGraphml(dir +  "\\" + graphml_name);
+            // Read GraphML file to link the node id with its step. It also saves the final nodes available
+            doc = parseGraphml(export_folder +  "/" + graphml_name);
 
-                // Get node information
-                getNodeInformation(doc);
+            // Get node information
+            getNodeInformation(doc);
 
-                // Build adjacent matrix with edge information
-                buildAdjacentMatrix();
+            // Build adjacent matrix with edge information
+            buildAdjacentMatrix();
 
-                // Get all possible paths
-                finalPaths_clone = getAllPossiblePaths();
+            // Get all possible paths
+            finalPaths_clone = getAllPossiblePaths();
 
-                if (finalPaths_clone.size() > 0) {
-                    bw.write("Available paths\n");
-                    bw.write("--------------------------------------------------\n");
+            if (finalPaths_clone.size() > 0) {
+                bw.write("Scenarios created for file: " + graphml_name + "\n");
+                bw.write("--------------------------------------------------\n");
 
-                    for (int a = 0; a < finalPaths_clone.size(); a++) {
-                        String[] parts = finalPaths_clone.get(a).substring(1).split(",");
-                        bw.write("TEST SCENARIO: " + Integer.valueOf(a+1) + "\n");
-                        for (int j = 0; j < parts.length; j++) {
-                            bw.write(nodeid_value_dict.get(Integer.valueOf(parts[j])) + "\n");
-                        }
-                        bw.write("--------------------------------------------------\n");
+                for (int a = 0; a < finalPaths_clone.size(); a++) {
+                    String[] parts = finalPaths_clone.get(a).substring(1).split(",");
+                    bw.write("TEST SCENARIO: " + Integer.valueOf(a+1) + "\n");
+                    for (int j = 0; j < parts.length; j++) {
+                        bw.write(node_id_value_dict.get(Integer.valueOf(parts[j])) + "\n");
                     }
+                    bw.write("--------------------------------------------------\n");
                 }
-                else {
-                    System.out.println("Available paths: NONE");
+            }
+            else {
+                System.out.println("Available paths: NONE");
+            }
+        } catch (IOException e) {
+            System.out.println("ERROR! THERE WAS A PROBLEM WRITING THE TEXT FILE");
+        } finally {
+            try {
+                if (bw != null) {
+                    bw.close();
+                }
+                if (fw != null) {
+                    fw.close();
                 }
             } catch (IOException e) {
-                System.out.println("ERROR! THERE WAS A PROBLEM WRITING THE TEXT FILE");
-            } finally {
-                try {
-                    if (bw != null) {
-                        bw.close();
-                    }
-                    if (fw != null) {
-                        fw.close();
-                    }
-                } catch (IOException e) {
-                    System.out.println("ERROR! THERE WAS A PROBLEM CLOSING THE TEXT FILE");
-                }
+                System.out.println("ERROR! THERE WAS A PROBLEM CLOSING THE TEXT FILE");
             }
         }
         clean();
@@ -401,11 +406,11 @@ public class GenerateScenarios {
         FileWriter fw = null;
 
         try {
-            fw = new FileWriter(export_folder + "\\" + graphml_name + ".txt");
+            fw = new FileWriter(export_folder + "/" + graphml_name + ".txt");
             bw = new BufferedWriter(fw);
 
             // Read GraphML file to link the node id with its step. It also saves the final nodes available
-            doc = parseGraphml(dir +  "\\" + graphml_name);
+            doc = parseGraphml(dir +  "/" + graphml_name);
 
             // Get node information
             getNodeInformation(doc);
@@ -415,28 +420,28 @@ public class GenerateScenarios {
                 buildAdjacentMatrix();
 
                 // Clean the file name so it does not cause any trouble
-                String endingName = cleanFileName(nodeid_value_dict.get(end_node));
+                String endingName = cleanFileName(node_id_value_dict.get(end_node));
                 System.out.println(endingName);
 
                 String[] sprintAndStory = graphml_name.split(" - ");
                 String sprintNumber = sprintAndStory[0];
                 String jiraNumber = sprintAndStory[1];
 
-                fw = new FileWriter(export_folder + "\\" + sprintNumber + " - " + jiraNumber + " - " + endingName + " - " + generateTimestamp() + ".txt");
+                fw = new FileWriter(export_folder + "/" + sprintNumber + " - " + jiraNumber + " - " + endingName + " - " + generateTimestamp() + ".txt");
                 bw = new BufferedWriter(fw);
 
                 // Get specific paths
                 finalPaths_clone = getSpecificPath(end_node);
 
                 if (finalPaths_clone.size() > 0) {
-                    bw.write("Available paths\n");
+                    bw.write("The following scenarios were created as per selection made\n");
                     bw.write("--------------------------------------------------\n");
 
                     for (int a = 0; a < finalPaths_clone.size(); a++) {
                         String[] parts = finalPaths_clone.get(a).substring(1).split(",");
                         bw.write("TEST SCENARIO: " + Integer.valueOf(a + 1) + "\n");
                         for (int j = 0; j < parts.length; j++) {
-                            bw.write(nodeid_value_dict.get(Integer.valueOf(parts[j])) + "\n");
+                            bw.write(node_id_value_dict.get(Integer.valueOf(parts[j])) + "\n");
                         }
                         bw.write("--------------------------------------------------\n");
                     }
@@ -465,17 +470,42 @@ public class GenerateScenarios {
     }
 
     public static void clean() {
+        if (TESTING)
+            System.out.println("\nCleaning document...");
         doc = null;
-        nodeid_value_dict.clear();
+
+        if (TESTING)
+            System.out.println("Cleaning nodeid dictionary...");
+        node_id_value_dict.clear();
+
+        if (TESTING)
+            System.out.println("Cleaning finalnodes list...");
         final_nodes.clear();
+
+        if (TESTING)
+            System.out.println("Cleaning finalnodes dictionary...");
         final_nodes_value_dict.clear();
+
+        if (TESTING)
+            System.out.println("Cleaning edges...");
         edges_list.clear();
+
+        if (TESTING)
+            System.out.println("Resetting starting node...");
         starting_node = 999999999;
-        nlsteps = null;
+
+        if (TESTING)
+            System.out.println("Cleaning nodes_steps list...");
+        nodes_steps = null;
+
+        if (TESTING)
+            System.out.println("Cleaning finalpaths list...");
+        finalPaths_clone.clear();
+
         try {
             finalPaths_clone.clear();
         } catch (NullPointerException e) {
-            System.out.println("UNEXPECTED ERROR!");
+            System.out.println("UNEXPECTED ERROR UPON CLEANING THE LIST!");
         }
     }
 
