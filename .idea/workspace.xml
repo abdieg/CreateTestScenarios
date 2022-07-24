@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b8ba89ee-5a9c-427c-b268-cfcc4b825c27" name="Changes" comment="Fixed option 1">
+    <list default="true" id="b8ba89ee-5a9c-427c-b268-cfcc4b825c27" name="Changes" comment="Added option 3">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GenerateScenarios.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GenerateScenarios.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MainMenu.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -136,7 +135,14 @@
       <option name="project" value="LOCAL" />
       <updated>1658611281396</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Added option 3">
+      <created>1658674978570</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1658674978570</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -158,7 +164,8 @@
     <MESSAGE value="Testing CMD interface and generate class" />
     <MESSAGE value="Fixed option 2" />
     <MESSAGE value="Fixed option 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed option 1" />
+    <MESSAGE value="Added option 3" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added option 3" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
