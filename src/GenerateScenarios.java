@@ -55,6 +55,9 @@ public class GenerateScenarios {
 
         try {
             doc = builder.parse(graphml_xml);
+
+            if (TESTING)
+                System.out.println("\nGraphML file successfully parsed");
         } catch (SAXException e) {
             System.out.println("UNEXPECTED ERROR WHEN PARSING THE DOCUMENT!");
         } catch (NullPointerException e) {
@@ -88,11 +91,22 @@ public class GenerateScenarios {
                     if (stepName.contains(final_wording)) {
                         final_nodes.add(stepId);
                         final_nodes_value_dict.put(stepId, stepName);
+
+                        if (TESTING)
+                            System.out.println("\nFinal nodes added to their respective variable");
                     }
                     else if (stepName.contains(init_wording)) {
                         starting_node = stepId;
+
+                        if (TESTING)
+                            System.out.println("\nInitial node found");
                     }
                 }
+            }
+
+            if (TESTING) {
+                System.out.println("\nThis is how the ending nodes look after adding them to the dictionary:");
+                viewHashmap(final_nodes_value_dict);
             }
         }
         else {
@@ -407,9 +421,6 @@ public class GenerateScenarios {
         FileWriter fw = null;
 
         try {
-            fw = new FileWriter(export_folder + "/" + graphml_name + ".txt");
-            bw = new BufferedWriter(fw);
-
             // Read GraphML file to link the node id with its step. It also saves the final nodes available
             doc = parseGraphml(dir +  "/" + graphml_name);
 
@@ -422,25 +433,28 @@ public class GenerateScenarios {
 
                 // Clean the file name so it does not cause any trouble
                 String endingName = cleanFileName(node_id_value_dict.get(end_node));
-                System.out.println(endingName);
+                if (TESTING)
+                    System.out.println(endingName);
 
-                String[] sprintAndStory = graphml_name.split(" - ");
-                String sprintNumber = sprintAndStory[0];
-                String jiraNumber = sprintAndStory[1];
+                // Use the JIRA format to label the file
+//                String[] sprintAndStory = graphml_name.split(" - ");
+//                String sprintNumber = sprintAndStory[0];
+//                String jiraNumber = sprintAndStory[1];
 
-                fw = new FileWriter(export_folder + "/" + sprintNumber + " - " + jiraNumber + " - " + endingName + " - " + generateTimestamp() + ".txt");
+//                fw = new FileWriter(export_folder + "/" + sprintNumber + " - " + jiraNumber + " - " + endingName + " - " + generateTimestamp() + ".txt");
+                fw = new FileWriter(export_folder + "/" + endingName + " - " + generateTimestamp() + ".txt");
                 bw = new BufferedWriter(fw);
 
                 // Get specific paths
                 finalPaths_clone = getSpecificPath(end_node);
 
                 if (finalPaths_clone.size() > 0) {
-                    bw.write("The following scenarios were created as per selection made\n");
+                    bw.write("The following scenarios were created as per final testing outcome selected\n");
                     bw.write("--------------------------------------------------\n");
 
                     for (int a = 0; a < finalPaths_clone.size(); a++) {
                         String[] parts = finalPaths_clone.get(a).substring(1).split(",");
-                        bw.write("TEST SCENARIO: " + Integer.valueOf(a + 1) + "\n");
+//                        bw.write("TEST SCENARIO: " + Integer.valueOf(a + 1) + "\n");
                         for (int j = 0; j < parts.length; j++) {
                             bw.write(node_id_value_dict.get(Integer.valueOf(parts[j])) + "\n");
                         }
@@ -500,13 +514,9 @@ public class GenerateScenarios {
         nodes_steps = null;
 
         if (TESTING)
-            System.out.println("Cleaning finalpaths list...");
-        finalPaths_clone.clear();
-
-        try {
+            System.out.println("Cleaning finalpathsclone list...");
+        if (finalPaths_clone != null) {
             finalPaths_clone.clear();
-        } catch (NullPointerException e) {
-            System.out.println("UNEXPECTED ERROR UPON CLEANING THE LIST!");
         }
     }
 

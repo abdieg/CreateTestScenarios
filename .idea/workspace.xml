@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b8ba89ee-5a9c-427c-b268-cfcc4b825c27" name="Changes" comment="Fixed option 2">
+    <list default="true" id="b8ba89ee-5a9c-427c-b268-cfcc4b825c27" name="Changes" comment="Fixed option 1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example.graphml.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GenerateScenarios.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GenerateScenarios.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MainMenu.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +30,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2BtMmfCp85lmY5VyNG6lMv9XebN" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -129,7 +129,14 @@
       <option name="project" value="LOCAL" />
       <updated>1658610772171</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Fixed option 1">
+      <created>1658611281396</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1658611281396</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -150,7 +157,8 @@
     <MESSAGE value="Finishing scenarios class" />
     <MESSAGE value="Testing CMD interface and generate class" />
     <MESSAGE value="Fixed option 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed option 2" />
+    <MESSAGE value="Fixed option 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed option 1" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
